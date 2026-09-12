@@ -1,0 +1,14 @@
+﻿# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production
+dist/
+
+# System and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

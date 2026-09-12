@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORTEX - National Weather, Climate & Early Warning Intelligence System</title>
+  <meta name="description" content="CORTEX National Meteorological and Early Warning Intelligence Platform. Live radar, INSAT-3D satellite imagery, cyclone tracking, 7-day city forecasts, and agromet advisories.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/css/style.css">
+</head>
+<body>
+
+  <!-- Top Utility Bar -->
+  <div class="cortex-header-top">
+    <div class="top-bar-inner">
+      <div class="top-bar-left">
+        <span class="clock-badge">🕒 <span id="clock-ist">--:--:-- IST</span></span>
+        <span class="clock-badge d-none-sm">🌐 <span id="clock-utc">--:--:-- UTC</span></span>
+      </div>
+      <div class="top-bar-right">
+        <div class="palette-picker-wrap" title="Theme Color: Black">
+          <span>🎨 Color:</span>
+          <span class="palette-dot obsidian active" data-set-palette="obsidian" title="Pure Black Theme"></span>
+        </div>
+        <button id="btn-header-sos" class="btn-sos-header">🚨 SOS RESCUE (112/1078)</button>
+        <div class="accessibility-controls">
+          <button id="btn-font-decrease" title="Decrease font size">A-</button>
+          <button id="btn-font-reset" title="Default font size">A</button>
+          <button id="btn-font-increase" title="Increase font size">A+</button>
+        </div>
+        <button id="btn-theme-toggle" class="theme-toggle-btn">🌙 Dark</button>
+        <button id="btn-lang-toggle" class="lang-toggle-btn">हिन्दी वेबसाईट</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Brand Header -->
+  <header class="cortex-main-header">
+    <div class="header-inner">
+      <div class="brand-wrapper">
+        <!-- Precision Meteorological Radar Emblem -->
+        <svg class="brand-emblem-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 36px; height: 36px;">
+          <circle cx="22" cy="22" r="20" stroke="#3f3f46" stroke-width="1.5"/>
+          <circle cx="22" cy="22" r="13" stroke="#52525b" stroke-width="1.2" stroke-dasharray="2 3"/>
+          <circle cx="22" cy="22" r="7" stroke="#10b981" stroke-width="1.5"/>
+          <circle cx="22" cy="22" r="2.5" fill="#10b981"/>
+          <line x1="22" y1="2" x2="22" y2="42" stroke="#27272a" stroke-width="1"/>
+          <line x1="2" y1="22" x2="42" y2="22" stroke="#27272a" stroke-width="1"/>
+        </svg>
+
+        <div class="brand-titles">
+          <h1 class="brand-name-cortex">CORTEX</h1>
+        </div>
+      </div>
+
+      <!-- Live Search Bar -->
+      <div class="header-search-wrap">
+        <div class="search-input-box">
+          <input type="search" id="location-search-input" placeholder="Search city, state, or district in India..." autocomplete="off" data-i18n="search_placeholder">
+          <span class="search-icon">🔍</span>
+        </div>
+        <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Action Strip -->
+  <nav class="quick-action-strip">
+    <div class="quick-action-inner">
+      <a href="#warnings-section" class="qa-tab qa-warning">
+        <span class="qa-icon">⚠️</span>
+        <div>
+          <span class="qa-title" data-i18n="quick_warnings">Weather Warnings</span>
+          <span class="qa-desc">Active Regional Alerts</span>
+        </div>
+      </a>
+      <a href="#weather-map" id="qa-nowcast-btn" class="qa-tab qa-nowcast">
+        <span class="qa-icon">📡</span>
+        <div>
+          <span class="qa-title" data-i18n="quick_nowcast">Radar & Nowcast</span>
+          <span class="qa-desc">3-Hour Precipitation</span>
+        </div>
+      </a>
+      <div id="btn-open-crowdsource" class="qa-tab qa-crowd">
+        <span class="qa-icon">👥</span>
+        <div>
+          <span class="qa-title" data-i18n="quick_crowdsource">Local Report</span>
+          <span class="qa-desc">Share Weather Near You</span>
+        </div>
+      </div>
+      <a href="#specialized-services" class="qa-tab qa-special">
+        <span class="qa-icon">🌾</span>
+        <div>
+          <span class="qa-title" data-i18n="quick_specialized">Specialized Services</span>
+          <span class="qa-desc">Cyclone &bull; Agromet &bull; Marine</span>
+        </div>
+      </a>
+      <div id="btn-nav-sos" class="qa-tab qa-sos">
+        <span class="qa-icon">🚨</span>
+        <div>
+          <span class="qa-title" data-i18n="sos_nav_btn">Emergency Rescue (SOS)</span>
+          <span class="qa-desc">NDRF, SDRF & Hotlines</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breaking Alerts Scrolling Marquee -->
+  <div class="breaking-marquee-container">
+    <div class="marquee-label">
+      <span>WEATHER BULLETIN:</span>
+    </div>
+    <div class="marquee-content-wrap">
+      <div id="breaking-alerts-list" class="marquee-scroll">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Viewport -->
+  <main class="cortex-main-viewport">
+
+    <!-- Core Geospatial Map & Live Observation Panel -->
+    <section class="core-weather-grid">
+
+      <!-- Map Card -->
+      <div class="map-card-wrapper">
+        <div class="map-card-toolbar">
+          <div class="map-title-group">
+            <h3>🌐 CORTEX Meteorological GIS Hub</h3>
+          </div>
+          <div class="map-region-quick-select">
+            <select id="map-region-select" class="layer-btn map-region-dropdown" title="Select Indian State or Region">
+              <option value="">🗺️ Select State / Region...</option>
+              <option value="DL">Delhi NCR</option>
+              <option value="MH">Maharashtra (Mumbai / Pune)</option>
+              <option value="GJ">Gujarat (Ahmedabad / Saurashtra)</option>
+              <option value="KA">Karnataka (Bengaluru)</option>
+              <option value="TN">Tamil Nadu (Chennai)</option>
+              <option value="WB">West Bengal (Kolkata)</option>
+              <option value="TG">Telangana (Hyderabad)</option>
+              <option value="AP">Andhra Pradesh (Visakhapatnam)</option>
+              <option value="RJ">Rajasthan (Jaipur / Thar)</option>
+              <option value="UP">Uttar Pradesh (Lucknow / Varanasi)</option>
+              <option value="MP">Madhya Pradesh (Bhopal / Indore)</option>
+              <option value="KL">Kerala (Kochi / Thiruvananthapuram)</option>
+              <option value="OR">Odisha (Bhubaneswar / Puri)</option>
+              <option value="PB">Punjab & Haryana (Chandigarh)</option>
+              <option value="BR">Bihar (Patna)</option>
+              <option value="AS">Assam & North East (Guwahati)</option>
+              <option value="JK">Jammu & Kashmir (Srinagar)</option>
+              <option value="HP">Himachal Pradesh (Shimla)</option>
+              <option value="UK">Uttarakhand (Dehradun)</option>
+              <option value="GA">Goa (Panaji)</option>
+              <option value="JH">Jharkhand (Ranchi)</option>
+              <option value="CG">Chhattisgarh (Raipur)</option>
+            </select>
+          </div>
+          <div class="map-layer-toggles">
+            <button id="layer-toggle-stations" class="layer-btn active" title="Toggle Station Network">📍 Stations</button>
+            <button id="layer-toggle-radar" class="layer-btn active" title="Toggle Doppler Weather Radar">📡 Radar (DWR)</button>
+            <button id="layer-toggle-lightning" class="layer-btn active" title="Toggle Lightning Strikes">⚡ Lightning</button>
+            <button id="layer-toggle-warnings" class="layer-btn active" title="Toggle Color Warnings">⚠️ Alerts</button>
+            <button id="layer-toggle-cyclone" class="layer-btn active" title="Toggle Cyclone BOB-04">🌀 Cyclone</button>
+            <button id="layer-toggle-sos" class="layer-btn btn-sos-layer active" title="Toggle SOS Disaster Rescue Beacons">🚨 SOS Beacons</button>
+          </div>
+          <div class="map-basemap-toggles">
+            <button class="layer-btn active" data-basemap="light">Street</button>
+            <button class="layer-btn" data-basemap="dark">Dark</button>
+            <button class="layer-btn" data-basemap="satellite">Satellite</button>
+          </div>
+        </div>
+
+        <div class="map-canvas-container">
+          <div id="weather-map" class="weather-map-canvas"></div>
+          <div id="map-selection-toast" class="map-selection-toast hidden"></div>
+        </div>
+
+        <div class="map-footer-legend">
+          <div class="legend-items">
+            <span><span class="legend-dot" style="background:#dc2626"></span> Red Alert (>204mm)</span>
+            <span><span class="legend-dot" style="background:#ea580c"></span> Orange Warning (115-204mm)</span>
+            <span><span class="legend-dot" style="background:#ca8a04"></span> Yellow Watch</span>
+            <span><span class="legend-dot" style="background:#0284c7"></span> DWR Radar Echo</span>
+            <span>⚡ Lightning Strike</span>
+            <span>🚨 Active SOS Beacon</span>
+          </div>
+          <span class="legend-coords">INSAT-3D Multispectral & DWR S-Band Calibration</span>
+        </div>
+      </div>
+
+      <!-- Current Observation Panel -->
+      <div class="observation-card-wrapper">
+        <div class="obs-card-header">
+          <h2 id="current-station-name" class="obs-station-title">New Delhi (Safdarjung)</h2>
+          <div id="current-station-meta" class="obs-station-meta">Delhi &bull; Elev: 216m &bull; 📡 DWR Radar Station</div>
+        </div>
+
+        <div class="obs-primary-metric">
+          <div>
+            <div id="obs-temperature" class="obs-temp-val">29.2<sup>°C</sup></div>
+            <div id="obs-condition" class="obs-condition-text">Mist / Hazy</div>
+          </div>
+          <div id="obs-icon" class="obs-weather-symbol icon-cloud-fog"></div>
+        </div>
+
+        <div class="obs-grid-metrics">
+          <div class="obs-metric-box">
+            <span class="obs-m-label" data-i18n="feels_like">Feels Like</span>
+            <span id="obs-feels-like" class="obs-m-value">39.4°C</span>
+          </div>
+          <div class="obs-metric-box">
+            <span class="obs-m-label" data-i18n="humidity">Humidity</span>
+            <span id="obs-humidity" class="obs-m-value">95%</span>
+          </div>
+          <div class="obs-metric-box">
+            <span class="obs-m-label" data-i18n="wind">Wind Speed</span>
+            <span id="obs-wind" class="obs-m-value">
+              <span id="obs-wind-arrow" class="wind-arrow">↑</span> Calm 0 km/h
+            </span>
+          </div>
+          <div class="obs-metric-box">
+            <span class="obs-m-label" data-i18n="pressure">Surface Pressure</span>
+            <span id="obs-pressure" class="obs-m-value">1006 hPa</span>
+          </div>
+        </div>
+
+        <div class="obs-astronomy-strip">
+          <div class="obs-astro-item">
+            <span data-i18n="sunrise">Sunrise</span>
+            <strong id="obs-sunrise">06:05 IST</strong>
+          </div>
+          <div class="obs-astro-item">
+            <span data-i18n="sunset">Sunset</span>
+            <strong id="obs-sunset">18:31 IST</strong>
+          </div>
+          <div class="obs-astro-item">
+            <span>UV Index</span>
+            <strong id="obs-uv">7.2 (High)</strong>
+          </div>
+        </div>
+
+        <!-- Integrated Mini AQI Component in Sidebar -->
+        <div id="aqi-overview-container" style="padding: 1rem; border-top: 1px solid var(--border-color);">
+          <!-- Populated by aqi.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Major Cities Carousel -->
+    <section class="major-hubs-section">
+      <div class="section-heading-bar">
+        <h4 data-i18n="major_cities">Current Weather Across Major Indian Hubs</h4>
+        <span class="text-xs text-muted">Click any hub to inspect full observatory data</span>
+      </div>
+      <div id="major-cities-carousel" class="cities-grid-scroll">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- 7-Day Forecast & 24-Hour Hourly Trend -->
+    <section class="forecast-analytics-section">
+      <div class="section-heading-bar">
+        <h4 data-i18n="forecast_7day">7-Day Meteorological Outlook</h4>
+        <span class="text-xs text-muted">High-Resolution Numerical Weather Prediction (NWP)</span>
+      </div>
+
+      <div id="seven-day-forecast-cards" class="seven-day-cards-grid">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="section-heading-bar mt-4">
+        <h4 data-i18n="hourly_24h">24-Hour Hourly Temperature & Rainfall Probability</h4>
+      </div>
+      <div class="chart-wrapper-box">
+        <canvas id="hourly-trend-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- Specialized Services Section (IMD-Equivalent Portals) -->
+    <section id="specialized-services" class="specialized-services-container">
+      <div class="specialized-tab-nav">
+        <button class="service-nav-btn active" data-target-tab="cyclone-tracking-section">🌀 Cyclone Tracking Center</button>
+        <button class="service-nav-btn" data-target-tab="agromet-section">🌾 Agromet Advisory (GKMS)</button>
+        <button class="service-nav-btn" data-target-tab="pilgrimage-section">🏔️ Pilgrimage & Tourism</button>
+        <button class="service-nav-btn" data-target-tab="marine-aviation-section">⚓ Marine & Aviation</button>
+      </div>
+
+      <div class="service-tab-body">
+        <!-- Cyclone Tab -->
+        <div id="cyclone-tracking-section" class="service-tab-pane active"></div>
+
+        <!-- Agromet Tab -->
+        <div id="agromet-section" class="service-tab-pane"></div>
+
+        <!-- Pilgrimage Tab -->
+        <div id="pilgrimage-section" class="service-tab-pane"></div>
+
+        <!-- Marine & Aviation Tab -->
+        <div id="marine-aviation-section" class="service-tab-pane">
+          <div class="agromet-header mb-3">
+            <h4 class="m-0 font-bold">⚓ Coastal, Marine & Aviation Meteorology</h4>
+            <p class="text-sm text-muted m-0">Gale Warnings, Sea State & High Seas Advisory for Fishermen and Civil Aviation</p>
+          </div>
+          <div class="pilgrimage-grid">
+            <div class="pilgrimage-card">
+              <div class="pilgrimage-card-top">
+                <h5 class="p-name">North Arabian Sea & Gujarat Coast</h5>
+                <span class="p-temp-tag text-danger">Squally 55-65 kmph</span>
+              </div>
+              <p class="text-sm mt-2"><strong>Sea Condition:</strong> Rough to Very Rough (Wave height 3.5 - 4.5m).</p>
+              <p class="p-advisory text-danger font-semibold">Fishermen Warning: Total suspension of fishing operations along Gujarat coast till 15th September.</p>
+            </div>
+            <div class="pilgrimage-card">
+              <div class="pilgrimage-card-top">
+                <h5 class="p-name">West-Central Bay of Bengal</h5>
+                <span class="p-temp-tag text-warning">Rough Sea (45-55 kmph)</span>
+              </div>
+              <p class="text-sm mt-2"><strong>Sea Condition:</strong> Rough seas influenced by Depression BOB-04.</p>
+              <p class="p-advisory">Small mechanized vessels advised to anchor safely in harbor. Avoid deep sea ventures.</p>
+            </div>
+            <div class="pilgrimage-card">
+              <div class="pilgrimage-card-top">
+                <h5 class="p-name">Civil Aviation Aerodrome Guidance</h5>
+                <span class="p-temp-tag">METAR / TAF</span>
+              </div>
+              <p class="text-sm mt-2"><strong>VIDP (Delhi):</strong> 121700Z 00000KT 3000 BR SCT025 29/27 Q1006 NOSIG.</p>
+              <p class="p-advisory">VABB (Mumbai): Gusting winds up to 28 kts during convective downpours. Moderate crosswind on RWY 27.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Citizen Crowdsource Weather Reporter Modal -->
+  <div id="crowdsource-modal" class="modal-overlay hidden">
+    <div class="modal-content-box">
+      <div class="modal-head">
+        <h4 class="m-0">👥 Public Weather Observation Report</h4>
+        <button id="btn-close-crowdsource" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-xs text-muted mb-3" data-i18n="report_desc">
+          Contribute ground-truth observations to improve forecast accuracy for your city or village.
+        </p>
+        <form id="crowdsource-form">
+          <div class="form-group">
+            <label for="cs-location">Your Location / Neighborhood</label>
+            <input type="text" id="cs-location" class="form-control" placeholder="e.g. Bandra West, Mumbai or Sector 62, Noida" required>
+          </div>
+          <div class="form-group">
+            <label for="cs-condition">Observed Weather Phenomenon</label>
+            <select id="cs-condition" class="form-control">
+              <option value="Torrential Heavy Rain">⛈️ Torrential Heavy Rain</option>
+              <option value="Moderate Rain with Lightning">🌧️ Moderate Rain with Thunder</option>
+              <option value="Light Intermittent Drizzle">🌦️ Light Drizzle</option>
+              <option value="Hailstorm Event">🧊 Hailstorm</option>
+              <option value="Dense Fog (Visibility < 100m)">🌫️ Dense Fog / Mist</option>
+              <option value="Squally High Winds / Duststorm">💨 Squally Winds / Duststorm</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="cs-waterlogging">
+              <span>Severe Waterlogging / Road Inundation Observed</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="cs-notes">Field Remarks / Observations (Optional)</label>
+            <textarea id="cs-notes" class="form-control" rows="3" placeholder="Describe wind speed, duration, or localized impacts..."></textarea>
+          </div>
+          <button type="submit" class="btn-primary-submit" data-i18n="btn_submit_report">Submit Ground Report</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOS Disaster Rescue Modal -->
+  <div id="sos-rescue-modal" class="sos-modal-overlay hidden">
+    <!-- Populated by sos.js -->
+  </div>
+
+  <!-- Clean Modern Footer -->
+  <footer class="cortex-footer-section">
+    <div class="footer-bottom-bar" style="justify-content: center; text-align: center; padding: 1.25rem 1rem;">
+      <span data-i18n="footer_rights">© 2026 CORTEX Meteorological System. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
