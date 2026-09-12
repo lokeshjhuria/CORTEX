@@ -49,10 +49,10 @@ export function renderHourlyChart(canvasId, hourlyData) {
 
   const ctx = canvas.getContext('2d');
 
-  // Gradient for temperature line (Emerald Theme)
+  // Gradient for temperature line (Electric Sky Theme)
   const tempGradient = ctx.createLinearGradient(0, 0, 0, 200);
-  tempGradient.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
-  tempGradient.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
+  tempGradient.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
+  tempGradient.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
 
   // If chart already exists, destroy before re-render
   if (hourlyChartInstance) {
@@ -67,21 +67,23 @@ export function renderHourlyChart(canvasId, hourlyData) {
         {
           label: 'Temperature (°C)',
           data: hourlyData.temps,
-          borderColor: '#10b981',
+          borderColor: '#38bdf8',
           backgroundColor: tempGradient,
-          borderWidth: 2.5,
+          borderWidth: 2.8,
           tension: 0.38,
           fill: true,
-          pointBackgroundColor: '#10b981',
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#0ea5e9',
+          pointBorderWidth: 2,
           pointHoverRadius: 6,
-          pointRadius: 3,
+          pointRadius: 3.5,
           yAxisID: 'y'
         },
         {
           label: 'Rain Probability (%)',
           data: hourlyData.precipitationProb,
           type: 'bar',
-          backgroundColor: 'rgba(52, 211, 153, 0.5)',
+          backgroundColor: 'rgba(16, 185, 129, 0.65)',
           borderRadius: 4,
           barThickness: 12,
           yAxisID: 'y1'
@@ -99,13 +101,18 @@ export function renderHourlyChart(canvasId, hourlyData) {
         legend: {
           position: 'top',
           labels: {
-            font: { family: 'Inter, system-ui, sans-serif', size: 12 },
+            color: '#f8fafc',
+            font: { family: 'Inter, system-ui, sans-serif', size: 12, weight: 'bold' },
             usePointStyle: true,
             boxWidth: 8
           }
         },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          backgroundColor: 'rgba(10, 14, 23, 0.95)',
+          borderColor: 'rgba(56, 189, 248, 0.4)',
+          borderWidth: 1,
+          titleColor: '#ffffff',
+          bodyColor: '#e2e8f0',
           titleFont: { size: 13, weight: 'bold' },
           bodyFont: { size: 12 },
           padding: 10,
@@ -115,7 +122,7 @@ export function renderHourlyChart(canvasId, hourlyData) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { size: 11 } }
+          ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } }
         },
         y: {
           type: 'linear',
@@ -124,9 +131,11 @@ export function renderHourlyChart(canvasId, hourlyData) {
           title: {
             display: true,
             text: 'Temp (°C)',
-            font: { size: 11 }
+            color: '#38bdf8',
+            font: { size: 11, weight: 'bold' }
           },
-          grid: { color: 'rgba(203, 213, 225, 0.3)' }
+          ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } },
+          grid: { color: 'rgba(255, 255, 255, 0.08)' }
         },
         y1: {
           type: 'linear',
@@ -137,8 +146,10 @@ export function renderHourlyChart(canvasId, hourlyData) {
           title: {
             display: true,
             text: 'Rain (%)',
-            font: { size: 11 }
+            color: '#10b981',
+            font: { size: 11, weight: 'bold' }
           },
+          ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } },
           grid: { drawOnChartArea: false }
         }
       }

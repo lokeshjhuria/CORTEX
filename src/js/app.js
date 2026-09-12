@@ -529,19 +529,40 @@ function showToast(message) {
  * Initializes the Multi-Color Theme Palette selector
  */
 function initThemePalette() {
-  let savedPalette = localStorage.getItem('cortex_theme_palette');
-  if (!savedPalette || savedPalette !== 'obsidian') {
-    savedPalette = 'obsidian';
-    localStorage.setItem('cortex_theme_palette', 'obsidian');
+  const defaultPalette = 'slate';
+  let savedPalette = localStorage.getItem('cortex_theme_palette') || defaultPalette;
+  const validPalettes = ['slate', 'oceanic', 'emerald', 'obsidian'];
+  if (!validPalettes.includes(savedPalette)) {
+    savedPalette = defaultPalette;
   }
-  document.body.setAttribute('data-palette', 'obsidian');
+
+  function applyPalette(palette) {
+    document.body.setAttribute('data-palette', palette);
+    localStorage.setItem('cortex_theme_palette', palette);
+
+    document.querySelectorAll('.palette-dot[data-set-palette]').forEach(dot => {
+      if (dot.getAttribute('data-set-palette') === palette) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  }
+
+  applyPalette(savedPalette);
 
   const dots = document.querySelectorAll('.palette-dot[data-set-palette]');
   dots.forEach(dot => {
     dot.addEventListener('click', () => {
-      document.body.setAttribute('data-palette', 'obsidian');
-      localStorage.setItem('cortex_theme_palette', 'obsidian');
-      showToast("Color: Pure Black Theme Active");
+      const palette = dot.getAttribute('data-set-palette');
+      applyPalette(palette);
+      const names = {
+        slate: 'Aerospace Slate (High-Contrast)',
+        oceanic: 'Deep Oceanic Navy',
+        emerald: 'Meteorological Emerald',
+        obsidian: 'Obsidian Black'
+      };
+      showToast(`🎨 Theme active: ${names[palette] || palette}`);
     });
   });
 }

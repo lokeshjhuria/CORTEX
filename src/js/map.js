@@ -56,8 +56,8 @@ export function initMap(containerId, onStationSelect) {
     maxZoom: 17
   });
 
-  // Set default basemap
-  activeBaseLayer = baseLayers.light;
+  // Set default basemap to high-contrast dark tiles for weather overlay clarity
+  activeBaseLayer = baseLayers.dark;
   activeBaseLayer.addTo(mapInstance);
 
   // Create layer groups
@@ -97,6 +97,8 @@ export function refreshMapSize() {
     mapInstance.invalidateSize(true);
   }
 }
+
+
 
 /**
  * Handle user clicks anywhere on the map to query region & fetch live weather
