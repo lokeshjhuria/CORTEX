@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "chart.js": "^4.4.7",
-    "leaflet": "^1.9.4"
-  },
-  "devDependencies": {
+    "leaflet": "^1.9.4",
     "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
