@@ -27,33 +27,32 @@ export function initMap(containerId, onStationSelect) {
   onStationSelectCallback = onStationSelect;
 
   // Initialize map centered over India
+  // Initialize map centered over India without default Leaflet attribution watermark
   mapInstance = L.map(containerId, {
     center: [22.5, 80.0],
     zoom: 5,
     minZoom: 4,
     maxZoom: 15,
     zoomControl: false,
+    attributionControl: false,
     preferCanvas: true
   });
 
   // Custom Zoom Control top-right
   L.control.zoom({ position: 'topright' }).addTo(mapInstance);
 
-  // Basemap Tile Providers - OpenStreetMap as highly reliable primary standard
+  // Basemap Tile Providers - Clean without watermark attributions
   baseLayers.light = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | CORTEX Geospatial',
     subdomains: ['a', 'b', 'c'],
     maxZoom: 19
   });
 
   baseLayers.dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-    attribution: '&copy; CARTO & CORTEX Radar GIS',
     subdomains: 'abcd',
     maxZoom: 19
   });
 
   baseLayers.satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '&copy; Esri, Maxar, Earthstar Geographics | CORTEX SATMET',
     maxZoom: 17
   });
 

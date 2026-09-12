@@ -596,6 +596,11 @@ body {
   100% { transform: translateY(-6px); }
 }
 
+/* Remove Leaflet attribution control watermark */
+.leaflet-control-attribution {
+  display: none !important;
+}
+
 .map-footer-legend {
   padding: 0.55rem 1rem;
   background: var(--surface-bg);
